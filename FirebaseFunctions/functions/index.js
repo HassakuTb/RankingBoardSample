@@ -3,45 +3,51 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 
 //  Entryを追加
+//  /addEntry?name=ほげ&score=1234
 exports.addEntry = functions
   .region('asia-northeast1')
   .https.onCall((data, context) =>
 {
-  if(context.auth === undefined){
+  if(context.auth === undefined || !context.auth.uid || context.auth.uid === 0){
     throw new functions.https.HttpsError('unauthenticated');
   }
-
-  const entry = {
-    name : data.name,
-    score : data.score
-  };
-  return admin.firestore().collection('entries')
-    .add(entry)
+  return admin.auth().getUser(context.auth.uid)
+    .then(() =>
+    {
+      const entry = {
+        name : data.name,
+        score : data.score
+      };
+      return admin.firestore().collection('entries').add(entry)
+    })
     .then((snapshot) =>
-  {
-    return 'OK';
-  });
+    {
+      return 'OK';
+    });
 });
 
-//  TopEntryを取得
+//  Entryを追加
+//  /getTopEntries?count=100
 exports.getTopEntries = functions
   .region('asia-northeast1')
   .https.onCall((data, context) =>
 {
-  if(context.auth === undefined){
+  if(context.auth === undefined || !context.auth.uid || context.auth.uid === 0){
     throw new functions.https.HttpsError('unauthenticated');
   }
-
-  const count = data.count;
-
-  return admin.firestore().collection('entries')
-    .orderBy('score', 'desc')
-    .limit(count)
-    .get()
+  return admin.auth().getUser(context.auth.uid)
+    .then(() =>
+    {
+      const count = data.count;
+      return admin.firestore().collection('entries')
+        .orderBy('score', 'desc')
+        .limit(count)
+        .get();
+    })
     .then((qSnapshot) =>
-  {
-    return {
-      entries : qSnapshot.docs.map(x => x.data())
-    };
-  });
+    {
+      return {
+        entries : qSnapshot.docs.map(x => x.data())
+      };
+    });
 });
