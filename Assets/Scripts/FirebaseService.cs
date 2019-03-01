@@ -21,6 +21,15 @@ namespace RankingBoards
         }
 
         /// <summary>
+        /// 認証状態かどうか
+        /// </summary>
+        /// <returns></returns>
+        public bool IsSignedIn()
+        {
+            return auth.CurrentUser != null;
+        }
+
+        /// <summary>
         /// 匿名認証を行う
         /// </summary>
         /// <returns></returns>

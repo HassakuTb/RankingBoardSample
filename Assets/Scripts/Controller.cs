@@ -78,10 +78,13 @@ namespace RankingBoards
 
         private void OnDisable()
         {
-            service.SignOut().ContinueWith(task =>
+            if (service.IsSignedIn())
             {
-                Debug.Log("delete user done");
-            }, TaskScheduler.FromCurrentSynchronizationContext());
+                service.SignOut().ContinueWith(task =>
+                {
+                    Debug.Log("delete user done");
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+            }
         }
     }
 }
