@@ -25,6 +25,7 @@ namespace RankingBoards
             //  サインインの実行
             signInButton.onClick.AddListener(() =>
             {
+                if (service.IsSignedIn()) return;
                 service.SignInAnonymouslyAsync().ContinueWith(task =>
                 {
                     if (!task.IsFaulted)
