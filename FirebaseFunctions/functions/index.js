@@ -3,7 +3,6 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 
 //  Entryを追加
-//  /addEntry?name=ほげ&score=1234
 exports.addEntry = functions
   .region('asia-northeast1')
   .https.onCall((data, context) =>
@@ -26,8 +25,7 @@ exports.addEntry = functions
     });
 });
 
-//  Entryを追加
-//  /getTopEntries?count=100
+//  topEntriesを取得
 exports.getTopEntries = functions
   .region('asia-northeast1')
   .https.onCall((data, context) =>
